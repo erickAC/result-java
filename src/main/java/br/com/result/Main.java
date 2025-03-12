@@ -1,15 +1,22 @@
 package br.com.result;
 
 import br.com.result.models.Result;
-import br.com.result.models.Success;
 
 public class Main {
     public static void main(String[] args) {
-        Boolean teste = testResult().value;
-        System.out.println(teste);
-    }
 
-    public static Result<Boolean> testResult() {
-        return new Success<Boolean>(true);
+        Result<Boolean> resultSuccess = Result.toSuccess(true);
+        Result<Boolean> resultFailure = Result.toFailure(new Exception("vasco"));
+
+        resultSuccess.fold(
+                success -> System.out.println("Sucesso " + success),
+                        exception -> System.out.println("Erro " + exception.getMessage())
+        );
+
+        resultFailure.fold(
+                success -> System.out.println("Sucesso " + success),
+                exception -> System.out.println("erro " + exception.getMessage())
+        );
+
     }
 }

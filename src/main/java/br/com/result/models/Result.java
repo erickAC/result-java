@@ -10,21 +10,32 @@ public class Result<T> {
     public Consumer<Exception> left;
     public boolean error;
 
-    public Result<T> toFailure(Exception exception) {
+    Result() {
+        this.right = t -> {};
+        this.left = t -> {};
+    }
+
+    public static <T> Result<T> toFailure(Exception exception) {
         Result<T> result = new Result<>();
         result.error = true;
         result.left = (x) -> { throw new RuntimeException(x); };
-        this.left.accept(exception);
         return result;
     }
 
-    public void toSuccess(T value) {
+    public static <T> Result<T> toSuccess(T value) {
         Result<T> result = new Result<>();
         result.error = false;
-        result.
-        result.left = (x) -> { throw new RuntimeException(x); };
-        this.left.accept(exception);
+        result.value = value;
+        result.right = (x) -> {};
         return result;
+    }
+
+    public void fold(Consumer<T> onSuccess, Consumer<Exception> onFailure) {
+        if (error) {
+            onFailure.accept(new RuntimeException("Erro no processo"));
+        } else {
+            onSuccess.accept(value);
+        }
     }
 
     @Override
